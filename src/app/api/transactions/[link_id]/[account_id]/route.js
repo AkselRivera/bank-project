@@ -76,3 +76,49 @@ export async function GET(request, { params }) {
     )
   }
 }
+
+export async function POST(request, { params }) {
+  try {
+    const { account_id } = params
+    const body = await request.json()
+
+    const token = process.env.TOKEN || 'nothing'
+    const headers = {
+      Authorization: `Basic ${token}`,
+      'Content-Type': 'application/json',
+    }
+
+    if (account_id === '') {
+      delete body.account
+    }
+
+    const resp = await fetch(`https://sandbox.belvo.com/api/transactions/`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    })
+
+    if (resp.ok) {
+      return NextResponse.json(
+        {
+          message: 'Transaction created',
+        },
+        {
+          status: 200,
+        }
+      )
+    }
+    const details = await resp.json()
+    return NextResponse.json(
+      {
+        message: 'Error creating transaction',
+        details,
+      },
+      {
+        status: resp.status,
+      }
+    )
+  } catch (error) {
+    return error
+  }
+}

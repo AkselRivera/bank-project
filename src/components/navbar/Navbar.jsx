@@ -1,5 +1,6 @@
+'use client'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import NextLogo from '../../../public/next.svg'
 import Link from 'next/link'
 import {
@@ -15,8 +16,24 @@ import {
   NavbarLink,
   NavbarToggle,
 } from 'flowbite-react'
+import { me } from '../../actions/auth'
 
 export function Navbar() {
+  const [userData, setuserData] = useState({ name: '', email: '' })
+  useEffect(() => {
+    me()
+      .then((resp) => resp.json())
+      .then(({ data }) => {
+        const name = data?.name || 'Guest Name'
+        const email = data?.email || 'email@email.com'
+        const avatar =
+          data?.avatar ||
+          'https://flowbite.com/docs/images/people/profile-picture-5.jpg'
+        const role = data?.role || 'GUEST'
+
+        setuserData({ name, email, avatar, role })
+      })
+  }, [])
   return (
     <FNavbar fluid rounded>
       <NavbarBrand as={Link} href="/">
@@ -34,25 +51,20 @@ export function Navbar() {
         <Dropdown
           arrowIcon={false}
           inline
-          label={
-            <Avatar
-              alt="User settings"
-              img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-              rounded
-            />
-          }
+          label={<Avatar alt="User settings" img={userData.avatar} rounded />}
         >
           <DropdownHeader>
-            <span className="block text-sm">Bonnie Green</span>
+            <span className="block text-sm">{userData.name}</span>
             <span className="block truncate text-sm font-medium">
-              name@flowbite.com
+              {userData.email}
             </span>
           </DropdownHeader>
-          <DropdownItem>Dashboard</DropdownItem>
-          <DropdownItem>Settings</DropdownItem>
-          <DropdownItem>Earnings</DropdownItem>
+          {/* <DropdownItem>Dashboard</DropdownItem> */}
+          {/* <DropdownItem>Settings</DropdownItem> */}
           <DropdownDivider />
-          <DropdownItem>Sign out</DropdownItem>
+          <DropdownItem>
+            <Link href="/private/logout">Sign out</Link>
+          </DropdownItem>
         </Dropdown>
         {/* <NavbarToggle /> */}
         <NavbarToggle />

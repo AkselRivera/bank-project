@@ -1,7 +1,17 @@
 import { Navbar } from '../../components/navbar'
 import { Sidebar } from '../../components/sidebar'
 
-export default function PrivateLayout({ children }) {
+// export async function getServerSideProps(context) {
+//   const resp = await me(context)
+
+//   const data = await resp.json()
+
+//   return {
+//     props: { data },
+//   }
+// }
+
+export default async function PrivateLayout({ children }) {
   return (
     <div className="flex flex-col flex-wrap flex-1">
       <Navbar />

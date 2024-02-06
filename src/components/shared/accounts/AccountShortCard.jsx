@@ -6,11 +6,19 @@ export function AccountShortCard({
   currency,
   balance,
   category,
+  loan_data,
+  credit_data,
   last_accessed_at,
   children,
 }) {
   const available = balance?.available ?? 0
   const current = balance?.current ?? 0
+  const credit_limit =
+    category === 'CREDIT_CARD'
+      ? credit_data?.credit_limit
+      : category === 'LOAN_ACCOUNT'
+      ? loan_data?.credit_limit
+      : current
 
   return (
     <Card className="min-w-[16rem] max-w-sm max-h-[26rem] flex-1 w-full relative">
@@ -27,7 +35,10 @@ export function AccountShortCard({
           <div className="flex flex-col items-center justify-center mb-2">
             <Label htmlFor="available" value="Available:" className="" />
             <span name="available" className=" font-normal">
-              $ {(available - current).toFixed(2) + ' ' + currency}
+              ${' '}
+              {category === 'CHECKING_ACCOUNT'
+                ? available.toFixed(2)
+                : (credit_limit - available).toFixed(2)}
             </span>
           </div>
           <div className="flex flex-col items-center justify-center mb-2">
@@ -41,7 +52,7 @@ export function AccountShortCard({
 
         <span className="text-xs font-semibold mt-1 text-gray-900/70 dark:text-white/70 ">
           Balance used: ${' '}
-          {(current - (available - current)).toFixed(2) + ' ' + currency}
+          {(credit_limit - (available - credit_limit)).toFixed(2)}
         </span>
 
         {children}

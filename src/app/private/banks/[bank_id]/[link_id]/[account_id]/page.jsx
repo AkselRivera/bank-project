@@ -69,6 +69,8 @@ export default async function TransactionPage({ params }) {
             currency={data.account.currency}
             balance={data.account.balance}
             category={data.account.category}
+            credit_data={data.account.credit_data}
+            loan_data={data.account.loan_data}
             last_accessed_at={data.account.last_accessed_at}
           ></AccountShortCard>
           {['CREDIT_CARD', 'LOAN_ACCOUNT'].includes(data.account.category) && (

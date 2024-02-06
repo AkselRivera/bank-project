@@ -8,3 +8,5 @@ export { Accordion } from './accordion/Accordion'
 export { PaymentDetails } from './transactions/PaymentDetails'
 
 export { DefaultTable } from './tables/DefaultTable'
+
+export { Modal } from './modal/Modal'

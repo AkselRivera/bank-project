@@ -21,11 +21,11 @@ const Navlinks = [
       </span>
     ),
   },
-  {
-    to: '/',
-    title: 'Otra cosa',
-    Icon: HiInbox,
-  },
+  // {
+  //   to: '/',
+  //   title: 'Otra cosa',
+  //   Icon: HiInbox,
+  // },
 ]
 
 export function Sidebar() {
@@ -64,7 +64,7 @@ export function Sidebar() {
         </FSidebar.ItemGroup>
         <FSidebar.ItemGroup>
           <Sidelinks to="/private/help" title="Help" Icon={BiBuoy} />
-          <Sidelinks to="/login" title="Sign out" Icon={HiLogout} />
+          <Sidelinks to="/private/logout" title="Sign out" Icon={HiLogout} />
         </FSidebar.ItemGroup>
       </FSidebar.Items>
     </FSidebar>

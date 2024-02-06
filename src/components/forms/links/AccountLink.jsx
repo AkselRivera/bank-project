@@ -3,15 +3,16 @@
 import { useForm } from 'react-hook-form'
 import { FormInput } from '../../shared/'
 import { Button, Toast } from 'flowbite-react'
-import Link from 'next/link'
-import { login } from '../../../actions/auth'
+import { createAccountLink } from '../../../actions/account'
 import { useState } from 'react'
 import { HiX } from 'react-icons/hi'
-import { revalidatePath } from 'next/cache'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
-export function Login() {
+import { AiOutlineLoading } from 'react-icons/ai'
+
+export function AccountLink({ form_fields }) {
   const router = useRouter()
+  const { bank_id } = useParams()
 
   const {
     register,
@@ -21,22 +22,32 @@ export function Login() {
   } = useForm()
 
   const [invalid, setInvalid] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const onSubmit = async (data) => {
+    setLoading(true)
     setInvalid(false)
-    const response = await login(data)
+    data.account = bank_id
+    const response = await createAccountLink(data)
     if (!response.ok) {
       setInvalid(true)
+
       const data = await response.json()
+      console.log('data', data)
       setMessage(data?.message)
+
+      setLoading(false)
     } else {
-      router.replace('/')
+      setLoading(false)
       reset()
+      console.log('Link created')
+      location.reload()
+      // router.replace(`/private/banks/${bank_id}`)
     }
   }
   return (
     <form
-      className="flex w-full max-w-2xl p-8 py-12 flex-col gap-4 rounded shadow-md"
+      className="flex w-full max-w-2xl p-8 py-12 flex-col gap-4 max-h-[80vh] overflow-auto"
       onSubmit={handleSubmit(onSubmit)}
     >
       {invalid && (
@@ -48,40 +59,35 @@ export function Login() {
           <Toast.Toggle />
         </Toast>
       )}
-      <FormInput
-        register={register}
-        validations={{ required: 'Email is required' }}
-        errors={errors}
-        label="Email"
-        name="email"
-        type="email"
-        placeholder="email@email.com"
-      />
-      <FormInput
-        register={register}
-        validations={{ required: 'Password is required' }}
-        errors={errors}
-        label="Password"
-        name="password"
-        type="password"
-        placeholder="* * * * * * *"
-      />
 
-      <div className="flex items-center gap-2">
-        Don't have an account?
-        <Link
-          href="/register"
-          className="text-blue-600 hover:underline dark:text-blue-500"
-        >
-          Sign up
-        </Link>
-      </div>
+      {form_fields?.map((field) => (
+        <FormInput
+          key={field.name}
+          {...field}
+          validations={{
+            pattern: {
+              value: field?.validation,
+              message: field?.validation_message,
+            },
+          }}
+          register={register}
+          errors={errors}
+        />
+      ))}
+
       <Button
         className="ease-in-out delay-300 transition-all duration-300 font-bold"
         gradientDuoTone="purpleToBlue"
         type="submit"
+        isProcessing={loading}
+        disabled={loading}
+        processingSpinner={<></>}
       >
-        Sign in
+        {loading ? (
+          <AiOutlineLoading className="animate-spin" />
+        ) : (
+          'Create a new account link'
+        )}
       </Button>
     </form>
   )

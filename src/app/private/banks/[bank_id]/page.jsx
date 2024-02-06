@@ -26,6 +26,7 @@ export default async function BankDetailsPage({ params }) {
     <BankDetailLayout
       name={data?.institution.display_name ?? 'Bank Name'}
       logo={data?.institution.logo}
+      form_fields={data?.institution.form_fields}
     >
       <div className=" h-[calc(100vh-13rem)] -mx-4 p-4 flex flex-wrap items-strech justify-center gap-6 my-4 overflow-auto">
         {data?.results?.map((account) => (
@@ -34,6 +35,8 @@ export default async function BankDetailsPage({ params }) {
             account_id={account.id}
             name={account.name}
             type={account.type}
+            credit_data={account.credit_data}
+            loan_data={account.loan_data}
             currency={account.currency}
             category={account.category}
             balance={account.balance}

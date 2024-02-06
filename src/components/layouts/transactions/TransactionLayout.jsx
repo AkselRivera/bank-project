@@ -4,6 +4,8 @@ import { Breadcrumb } from '../../shared'
 import { BREADCRUMB } from '../../../constants'
 import { Button, Tooltip } from 'flowbite-react'
 import { TfiReload } from 'react-icons/tfi'
+import { getTransactions } from '../../../actions/transactions'
+import { useParams, useRouter } from 'next/navigation'
 
 export function TransactionLayout({
   children,
@@ -11,6 +13,20 @@ export function TransactionLayout({
   bank_id,
   account_name,
 }) {
+  const { link_id, account_id } = useParams()
+  const router = useRouter()
+  const getLastTransactions = async (data) => {
+    const resp = await getTransactions({
+      link_id,
+      account_id,
+    })
+
+    if (resp.ok) {
+      router.refresh()
+    } else {
+      alert('Something went wrong')
+    }
+  }
   return (
     <div className=" w-full p-4">
       <Breadcrumb
@@ -29,7 +45,7 @@ export function TransactionLayout({
             color="blue"
             className="ml-4"
             type="button"
-            onClick={() => alert('Not implemented yet')}
+            onClick={getLastTransactions}
           >
             <TfiReload className="h-4 w-4" />
           </Button>

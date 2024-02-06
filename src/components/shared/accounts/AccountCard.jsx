@@ -9,6 +9,8 @@ export function AccountCard({
   account_id,
   currency,
   balance,
+  loan_data,
+  credit_data,
   name,
   type,
   category,
@@ -16,6 +18,12 @@ export function AccountCard({
 }) {
   const available = balance?.available ?? 0
   const current = balance?.current ?? 0
+  const credit_limit =
+    category === 'CREDIT_CARD'
+      ? credit_data?.credit_limit
+      : category === 'LOAN_ACCOUNT'
+      ? loan_data?.credit_limit
+      : current
 
   const { bank_id } = useParams()
   return (
@@ -41,20 +49,24 @@ export function AccountCard({
           <div className="flex flex-col items-center justify-center mb-2">
             <Label htmlFor="available" value="Available:" className="" />
             <span name="available" className=" font-normal">
-              $ {(available - current).toFixed(2)}
+              ${' '}
+              {category === 'CHECKING_ACCOUNT'
+                ? available.toFixed(2)
+                : (credit_limit - available).toFixed(2)}
             </span>
           </div>
           <div className="flex flex-col items-center justify-center mb-2">
             <Label htmlFor="available" value="Total:" className="" />
             <span name="available" className=" font-normal">
-              $ {current.toFixed(2)}
+              $ {credit_limit.toFixed(2)}
             </span>
           </div>
         </div>
-        <Progress progress={(100 * available) / current} color="blue" />
+        <Progress progress={(100 * available) / credit_limit} color="blue" />
 
         <span className="text-xs font-semibold mt-1 text-gray-900/70 dark:text-white/70 ">
-          Balance used: $ {(current - (available - current)).toFixed(2)}
+          Balance used: ${' '}
+          {(credit_limit - (available - credit_limit)).toFixed(2)}
         </span>
       </div>
 
